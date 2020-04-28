@@ -14,7 +14,7 @@ def ui_percent(percent):
 
 
 @api.connect
-def slot4(arg):
+def slot(arg):
     os.system('cls' if os.name == 'nt' else 'clear')
 
     used = arg['used_memory']

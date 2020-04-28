@@ -3,7 +3,7 @@ import aiohttp
 from system_pb2 import SysMessage, BaseMessage
 from api import api
 import sys
-
+import threading
 
 def parse_message_from_string(bytes):
     message_params = dict()
@@ -22,10 +22,12 @@ def parse_message_from_string(bytes):
 
 
 async def main(api, ip):
+
     session = aiohttp.ClientSession()
     async with session.ws_connect(ip) as ws:
         while True:
             msg = await ws.receive()
+
             if msg.type == aiohttp.WSMsgType.ERROR:
                 await ws.close()
                 break
@@ -41,5 +43,10 @@ if __name__ == '__main__':
         ip = "http://{0}:8080/".format(sys.argv[1])
     if "cmd_ui" in sys.argv:
         import cmd_ui
+    if "wx_ui" in sys.argv:
+        from wx_ui import main_wx
+        thread = threading.Thread(target=main_wx)
+        thread.start()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(api, ip))
+

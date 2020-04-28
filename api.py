@@ -1,3 +1,3 @@
-from signaller import Signal
+from signaller import Signal, autoconnect
 
 api = Signal()
