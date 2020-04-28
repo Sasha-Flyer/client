@@ -30,9 +30,3 @@ def slot4(arg):
     percent = float(arg['ssd_usage'])
     ui_percent(percent)
     print(" ssd занят на {0}%".format(percent))
-
-
-
-
-
-#{'used_memory': 6362595328, 'total_memory': 17143246848, 'cpu_usage': 2.0999999046325684, 'ssd_usage': 95.19999694824219}

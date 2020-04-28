@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 from system_pb2 import SysMessage, BaseMessage
 from api import api
+import sys
 
 
 def parse_message_from_string(bytes):
@@ -20,9 +21,9 @@ def parse_message_from_string(bytes):
     return message_params
 
 
-async def main(api):
+async def main(api, ip):
     session = aiohttp.ClientSession()
-    async with session.ws_connect('http://188.134.86.16:8080/') as ws:
+    async with session.ws_connect(ip) as ws:
         while True:
             msg = await ws.receive()
             if msg.type == aiohttp.WSMsgType.ERROR:
@@ -35,8 +36,12 @@ async def main(api):
 
 
 if __name__ == '__main__':
-
+    ip = "http://127.0.0.1:8080/"
+    if sys.argv[1] != "local":
+        ip = "http://{0}:8080/".format(sys.argv[1])
+    if "cmd_ui" in sys.argv:
+        import cmd_ui
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(api))
+    loop.run_until_complete(main(api, ip))
 
 
