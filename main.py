@@ -5,6 +5,7 @@ from api import api
 import sys
 import threading
 
+
 def parse_message_from_string(bytes):
     message_params = dict()
     message = BaseMessage()
@@ -49,4 +50,3 @@ if __name__ == '__main__':
         thread.start()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(api, ip))
-
