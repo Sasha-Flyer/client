@@ -12,7 +12,6 @@ def append_history(history, new):
     for i in range(len(history)-1):
         history[i] = (i+1, history[i+1][1])
     history[i+1] = (i+2, new)
-    print(history)
 
 class PlotCanvasExample(plot.PlotCanvas):
     def __init__(self, parent, id, size, data = zero_history):
@@ -78,9 +77,7 @@ class Frame(wx.Frame):
         api.connect(self.slot)
         self.Show()
 
-        self.RAM_graph.draw([(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0)])
     def slot(self, args):
-        print("new")
         used = args['used_memory']
         total = args['total_memory']
         percent = int(used * 100 / total)
@@ -107,6 +104,7 @@ def main_wx():
     frame = Frame()
     app.MainLoop()
     sys.exit()
+
 
 if __name__ == "__main__":
     main_wx()
