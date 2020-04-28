@@ -1,3 +1,3 @@
 from signaller import Signal
 
-api = Signal('api')
+api = Signal()
