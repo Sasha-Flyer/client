@@ -1,9 +1,7 @@
 import asyncio
 import aiohttp
 from system_pb2 import SysMessage, BaseMessage
-from signaller import Signal, autoconnect
 from api import api
-import cmd_ui
 
 
 def parse_message_from_string(bytes):
