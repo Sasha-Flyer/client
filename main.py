@@ -43,5 +43,3 @@ if __name__ == '__main__':
         import cmd_ui
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main(api, ip))
-
-
