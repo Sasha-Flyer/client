@@ -1,6 +1,5 @@
 from api import api
 import os
-from time import sleep
 
 
 def ui_percent(percent):

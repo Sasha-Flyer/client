@@ -36,7 +36,6 @@ async def main(api, ip):
 
         try:
             while True:
-                print(len(api._slots))
                 msg = await ws.receive()
                 if msg.type == aiohttp.WSMsgType.ERROR:
                     await ws.close()
