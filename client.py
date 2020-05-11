@@ -7,7 +7,8 @@ import sys
 import threading
 import socket
 import wx
-
+from time import sleep
+ui_modules = 0
 def parse_message_from_string(bytes):
     message_params = dict()
     message = BaseMessage()
@@ -25,15 +26,17 @@ def parse_message_from_string(bytes):
 
 
 async def main(api, ip):
+    global ui_modules
     session = aiohttp.ClientSession()
+    print("Запуск...")
+    while len(api._slots) < ui_modules: # ожидание активации всех модулей интерфейсов
+        print("...")
+        sleep(0.5)
     async with session.ws_connect(ip) as ws:
 
         try:
-            from wx_ui import main_wx
-            thread = threading.Thread(target=main_wx)
-            thread.start()
-
             while True:
+                print(len(api._slots))
                 msg = await ws.receive()
                 if msg.type == aiohttp.WSMsgType.ERROR:
                     await ws.close()
@@ -43,10 +46,12 @@ async def main(api, ip):
 
                     api.emit(server_system)
         except Exception as e:
+            print(e)
             await ws.close()
             raise e
 
 def runserver():
+    global ui_modules
     print("Введите ip-адресс сервера. Пустое значение означает локальный адрес:")
 
     ip = input()
@@ -57,6 +62,11 @@ def runserver():
     server = "http://{0}:{1}/".format(ip, port)
 
     import cmd_ui
+    ui_modules += 1
+    from wx_ui import main_wx
+    thread = threading.Thread(target=main_wx)
+    thread.start()
+    ui_modules += 1
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(main(api, server))

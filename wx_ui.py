@@ -98,7 +98,6 @@ class Frame(wx.Frame):
     def call_after(self, args):
         wx.CallAfter(self.slot, args)
 
-
     @log_exception_sync
     def slot(self, args):
         used = round(args['used_memory']/1000000000, 3)
