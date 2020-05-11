@@ -5,8 +5,23 @@ from wx.lib.plot import PlotCanvas, PlotGraphics, PolyLine, PolyMarker
 import wx.lib.plot as plot
 import sys
 from copy import copy
+import functools
+import logging
+import asyncio
 
 zero_history = [(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0), (7, 0), (8, 0), (9, 0), (10, 0)]
+
+
+def log_exception_sync(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception:
+            logging.exception("Unhandled exception")
+            sys.exit(1)
+    return wrapper
+
 
 def append_history(history, new):
     for i in range(len(history)-1):
@@ -28,6 +43,8 @@ class PlotCanvasExample(plot.PlotCanvas):
         self.Draw(gc, )
 
 
+
+
 class Frame(wx.Frame):
     def __init__(self):
 
@@ -36,7 +53,7 @@ class Frame(wx.Frame):
             self, None, size=(1200, 500), title='Server Info'
         )
         panel = wx.Panel(self, id=0)
-        self.RAM = "Использовано памяти {0} из {1} ({2}%)"
+        self.RAM = "Использовано памяти {0} ГБ из {1} ГБ ({2}%)"
         self.CPU = "Процессор занят на {0}%"
         self.SSD = "ssd занят на {0}%"
         root_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -74,12 +91,19 @@ class Frame(wx.Frame):
         self.SSD_history = copy(zero_history)
 
         panel.SetSizer(root_sizer)
-        api.connect(self.slot)
+        api.connect(self.call_after)
         self.Show()
 
+    @log_exception_sync
+    def call_after(self, args):
+        wx.CallAfter(self.slot, args)
+
+
+    @log_exception_sync
     def slot(self, args):
-        used = args['used_memory']
-        total = args['total_memory']
+        used = round(args['used_memory']/1000000000, 3)
+        total = round(args['total_memory']/1000000000, 3)
+        if total == 0: total = 1
         percent = int(used * 100 / total)
         self.RAM_text.SetLabel(self.RAM.format(used, total, percent))
         self.RAM_ui.SetValue(percent)

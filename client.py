@@ -6,7 +6,7 @@ from api import api
 import sys
 import threading
 import socket
-
+import wx
 
 def parse_message_from_string(bytes):
     message_params = dict()
@@ -27,10 +27,12 @@ def parse_message_from_string(bytes):
 async def main(api, ip):
     session = aiohttp.ClientSession()
     async with session.ws_connect(ip) as ws:
+
         try:
             from wx_ui import main_wx
             thread = threading.Thread(target=main_wx)
             thread.start()
+
             while True:
                 msg = await ws.receive()
                 if msg.type == aiohttp.WSMsgType.ERROR:
@@ -38,6 +40,7 @@ async def main(api, ip):
                     break
                 else:
                     server_system = parse_message_from_string(msg.data)
+
                     api.emit(server_system)
         except Exception as e:
             await ws.close()
@@ -45,6 +48,7 @@ async def main(api, ip):
 
 def runserver():
     print("Введите ip-адресс сервера. Пустое значение означает локальный адрес:")
+
     ip = input()
     if ip == "":
         ip = "127.0.0.1"

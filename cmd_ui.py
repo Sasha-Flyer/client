@@ -17,8 +17,9 @@ def ui_percent(percent):
 def slot(arg):
     os.system('cls' if os.name == 'nt' else 'clear')
 
-    used = arg['used_memory']
-    total = arg['total_memory']
+    used = round(arg['used_memory'] / 1000000000, 3)
+    total = round(arg['total_memory'] / 1000000000, 3)
+    if total == 0: total = 1
     percent = float(used*100/total)
     ui_percent(percent)
     print(" Использовано памяти {0} из {1} ({2}%)".format(used, total, percent))
