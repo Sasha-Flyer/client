@@ -1,0 +1,4 @@
+aiohttp==3.6.2
+protobuf==3.11.3
+PyInstaller==3.6
+Signaller==1.1.0
